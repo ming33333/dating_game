@@ -277,7 +277,7 @@ class Level1Page extends Component {
       Town(),
       Boy1(),
       MyTextBox(
-        '"Yes, I am a criminal. My crime is that of curiosity."',
+        '"Indeed, I am a criminal. My crime is that of curiosity."',
       )
         ..anchor = const Anchor(0,-2),
       _choice1 = RoundedButton(
