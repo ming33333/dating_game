@@ -1,11 +1,7 @@
-//must run as main.dart file
-
 import 'package:flame/components.dart';
-import 'package:flame/game.dart';
-import 'package:flutter/cupertino.dart';
 
-class MyCrate extends SpriteComponent {
-  MyCrate() : super(size: Vector2(1600,800));
+class School extends SpriteComponent {
+  School() : super(size: Vector2(1600, 800));
 
   @override
   Future<void> onLoad() async {
@@ -13,18 +9,20 @@ class MyCrate extends SpriteComponent {
   }
 }
 
-class MyGame extends FlameGame {
+class Town extends SpriteComponent {
+  Town() : super(size: Vector2(1600, 1000));
+
   @override
   Future<void> onLoad() async {
-    await add(MyCrate());
+    sprite = await Sprite.load('town.png');
   }
 }
 
-main() {
-  final myGame = MyGame();
-  runApp(
-    GameWidget(
-      game: myGame,
-    ),
-  );
+class Boy1 extends SpriteComponent {
+  Boy1() : super(size: Vector2(300, 500), anchor: const Anchor(-3, -.8));
+
+  @override
+  Future<void> onLoad() async {
+    sprite = await Sprite.load('Boy1.png');
+  }
 }

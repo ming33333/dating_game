@@ -1,11 +1,9 @@
 import 'package:flame/game.dart';
 import 'package:flutter/widgets.dart';
-import 'router.dart';
-import 'image_load.dart';
-import 'text_load.dart';
+import 'full_game.dart';
 
 
 void main() {
-  final game = RouterGame();
+  final game = FullGame();
   runApp(GameWidget(game: game));
 }
