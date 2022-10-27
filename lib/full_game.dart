@@ -31,6 +31,10 @@ class FullGame extends FlameGame with HasTappableComponents {
   }
 }
 
+mixin HasGameReference on Component {
+  FullGame get game => findGame()! as FullGame;
+}
+
 class SplashScreenPage extends Component
     with TapCallbacks, HasGameRef<FullGame> {
   late Sprite background;
@@ -240,7 +244,7 @@ class PauseButton extends SimpleButton with HasGameRef<FullGame> {
   void action() => gameRef.router.pushNamed('pause');
 }
 
-class Level1Page extends Component {
+class Level1Page extends Component with HasGameReference {
   @override
   Future<void> onLoad() async {
     RoundedButton _choice1;
@@ -255,9 +259,22 @@ class Level1Page extends Component {
           color: const Color(0xffadde6c),
           borderColor: const Color(0xffedffab),
           anchor: const Anchor(-0.8, -8),
-          action: () {}),
+          action: () async {
+            final score = await game.router.pushAndWait(RateRoute());
+            firstChild<TextComponent>()!.text = 'Score: $score';
+          }),
       BackButton()
     ]);
+  }
+}
+int boy1Score = 0;
+class RateRoute extends ValueRoute<int> with HasGameReference {
+
+  RateRoute() : super(value: 0, transparent: true);
+  @override
+  Future<void> onLoad() async {
+    boy1Score++;
+    add(MyTextBox(boy1Score.toString()));
   }
 }
 
