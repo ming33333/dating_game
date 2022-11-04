@@ -8,6 +8,12 @@ import 'package:flame/rendering.dart';
 import 'package:flutter/rendering.dart';
 import 'text_load.dart';
 import 'image_load.dart';
+import 'package:flame/components.dart';
+import 'dart:convert';
+import 'dart:developer' as developer;
+
+
+import 'package:flutter/services.dart';
 
 class FullGame extends FlameGame with HasTappableComponents {
   TextPaint dialogTextPaint = TextPaint(
@@ -34,6 +40,8 @@ class FullGame extends FlameGame with HasTappableComponents {
 mixin HasGameReference on Component {
   FullGame get game => findGame()! as FullGame;
 }
+
+
 
 class SplashScreenPage extends Component
     with TapCallbacks, HasGameRef<FullGame> {
@@ -247,21 +255,93 @@ class PauseButton extends SimpleButton with HasGameRef<FullGame> {
 class Level1Page extends Component with HasGameReference {
   @override
   Future<void> onLoad() async {
-    RoundedButton _choice1;
+    RoundedButton;
     addAll([
       Town(),
       Boy1(),
       MyTextBox(
         '"Indeed, I am a criminal. My crime is that of curiosity."',
       )..anchor = const Anchor(0, -2),
-      _choice1 = RoundedButton(
+      RoundedButton(
           text: 'Choice 1',
           color: const Color(0xffadde6c),
           borderColor: const Color(0xffedffab),
           anchor: const Anchor(-0.8, -8),
           action: () async {
-            final score = await game.router.pushAndWait(RateRoute());
-            firstChild<TextComponent>()!.text = 'Score: $score';
+            Questions();
+          }),
+      RoundedButton(
+          text: 'Choice 2',
+          color: const Color(0xffadde6c),
+          borderColor: const Color(0xffedffab),
+          anchor: const Anchor(-0.8, -9),
+          action: () async {
+            await game.router.pushAndWait(RateRoute());
+          }),
+      RoundedButton(
+          text: 'Choice 3',
+          color: const Color(0xffadde6c),
+          borderColor: const Color(0xffedffab),
+          anchor: const Anchor(-0.8, -10),
+          action: () async {
+            await game.router.pushAndWait(RateRoute());
+          }),
+      RoundedButton(
+          text: 'Choice 4',
+          color: const Color(0xffadde6c),
+          borderColor: const Color(0xffedffab),
+          anchor: const Anchor(-0.8, -11),
+          action: () async {
+            await game.router.pushAndWait(RateRoute());
+          }),
+      BackButton()
+    ]);
+  }
+}
+
+
+
+class Level2Page extends Component with HasGameReference{
+  @override
+  Future<void> onLoad() async {
+    RoundedButton;
+    addAll([
+      Cafe(),
+      Boy2(),
+      MyTextBox(
+        '"Indeed, I am a criminal. My crime is that of curiosity."',
+      )..anchor = const Anchor(0, -2),
+      RoundedButton(
+          text: 'Choice 1',
+          color: const Color(0xffadde6c),
+          borderColor: const Color(0xffedffab),
+          anchor: const Anchor(-0.8, -8),
+          action: () async {
+            Questions();
+          }),
+      RoundedButton(
+          text: 'Choice 2',
+          color: const Color(0xffadde6c),
+          borderColor: const Color(0xffedffab),
+          anchor: const Anchor(-0.8, -9),
+          action: () async {
+            await game.router.pushAndWait(RateRoute());
+          }),
+      RoundedButton(
+          text: 'Choice 3',
+          color: const Color(0xffadde6c),
+          borderColor: const Color(0xffedffab),
+          anchor: const Anchor(-0.8, -10),
+          action: () async {
+            await game.router.pushAndWait(RateRoute());
+          }),
+      RoundedButton(
+          text: 'Choice 4',
+          color: const Color(0xffadde6c),
+          borderColor: const Color(0xffedffab),
+          anchor: const Anchor(-0.8, -11),
+          action: () async {
+            await game.router.pushAndWait(RateRoute());
           }),
       BackButton()
     ]);
@@ -269,7 +349,6 @@ class Level1Page extends Component with HasGameReference {
 }
 int boy1Score = 0;
 class RateRoute extends ValueRoute<int> with HasGameReference {
-
   RateRoute() : super(value: 0, transparent: true);
   @override
   Future<void> onLoad() async {
@@ -278,47 +357,16 @@ class RateRoute extends ValueRoute<int> with HasGameReference {
   }
 }
 
-class Level2Page extends Component {
-  @override
-  Future<void> onLoad() async {
-    final game = findGame()!;
-    addAll([
-      Background(const Color(0xff052b44)),
-      BackButton(),
-      PauseButton(),
-      Planet(
-        radius: 30,
-        color: const Color(0xFFFFFFff),
-        position: game.size / 2,
-        children: [
-          Orbit(
-            radius: 60,
-            revolutionPeriod: 5,
-            planet: Planet(radius: 10, color: const Color(0xffc9ce0d)),
-          ),
-          Orbit(
-            radius: 110,
-            revolutionPeriod: 10,
-            planet: Planet(
-              radius: 14,
-              color: const Color(0xfff32727),
-              children: [
-                Orbit(
-                  radius: 26,
-                  revolutionPeriod: 3,
-                  planet: Planet(radius: 5, color: const Color(0xffffdb00)),
-                ),
-                Orbit(
-                  radius: 35,
-                  revolutionPeriod: 4,
-                  planet: Planet(radius: 3, color: const Color(0xffdc00ff)),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ]);
+class Questions extends Component {
+  List _items = [];
+//  developer.log('log me');
+
+  // Fetch content from the json file
+  Future<void> readJson() async {
+    final String response = await rootBundle.loadString('assets/sample.json');
+    final data = await json.decode(response);
+    _items = data["questions"];
+    add(MyTextBox(_items[0]));
   }
 }
 

@@ -8,6 +8,14 @@ class School extends SpriteComponent {
     sprite = await Sprite.load('campus.png');
   }
 }
+class Cafe extends SpriteComponent {
+  Cafe() : super(size: Vector2(1600, 800));
+
+  @override
+  Future<void> onLoad() async {
+    sprite = await Sprite.load('cafe.png');
+  }
+}
 
 class Town extends SpriteComponent {
   Town() : super(size: Vector2(1600, 1000));
@@ -24,5 +32,23 @@ class Boy1 extends SpriteComponent {
   @override
   Future<void> onLoad() async {
     sprite = await Sprite.load('Boy1.png');
+  }
+}
+
+class Boy2 extends SpriteComponent {
+  Boy2() : super(size: Vector2(300, 500), anchor: const Anchor(-0, 0));
+
+  @override
+  Future<void> onLoad() async {
+    sprite = await Sprite.load('Boy2.png');
+  }
+}
+
+class Boy3 extends SpriteComponent {
+  Boy3() : super(size: Vector2(300, 500), anchor: const Anchor(-3, -.8));
+
+  @override
+  Future<void> onLoad() async {
+    sprite = await Sprite.load('Boy3.png');
   }
 }
