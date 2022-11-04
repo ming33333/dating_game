@@ -16,6 +16,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 import 'dart:math';
 import 'dart:io';
+import 'question_load.dart';
 
 import 'package:flutter/services.dart';
 
@@ -39,23 +40,29 @@ class FullGame extends FlameGame with HasTappableComponents {
       ),
     );
   }
-
 }
 
 mixin HasGameReference on Component {
   FullGame get game => findGame()! as FullGame;
+  var boyList = [Boy1(), Boy2(), Boy3()];
+  int numRandom = Random().nextInt(3); //change hard num to length of boy list
 }
 
 class SplashScreenPage extends Component
     with TapCallbacks, HasGameRef<FullGame> {
   late Sprite background;
-  var boyList = [Boy1(), Boy2()];
-  int num = Random().nextInt(5);
+
+  // Fetch content from the json file
+
   @override
   Future<void> onLoad() async {
+    final String response =
+    await rootBundle.loadString('assets/questions.json');
+    final Map<String, dynamic> data = await json.decode(response);
+    var items = data["questions"]['hey'];
     addAll([
       TextBoxComponent(
-        text: num.toString(),
+        text: items.toString(),
         textRenderer: TextPaint(
           style: const TextStyle(
             color: Color(0x66ffffff),
@@ -263,9 +270,9 @@ class Level1Page extends Component with HasGameReference {
     RoundedButton;
     addAll([
       Town(),
-      Boy1(),
+      boyList[numRandom],
       MyTextBox(
-        '"Indeed, I am a criminal. My crime is that of curiosity."',
+        '"level 1 Indeed, I am a criminal. My crime is that of curiosity."',
       )..anchor = const Anchor(0, -2),
       RoundedButton(
           text: 'Choice 1',
@@ -310,9 +317,9 @@ class Level2Page extends Component with HasGameReference {
     RoundedButton;
     addAll([
       Cafe(),
-      Boy2(),
+      boyList[numRandom],
       MyTextBox(
-        '"Indeed, I am a criminal. My crime is that of curiosity."',
+        '"Level2Indeed, I am a criminal. My crime is that of curiosity."',
       )..anchor = const Anchor(0, -2),
       RoundedButton(
           text: 'Choice 1',

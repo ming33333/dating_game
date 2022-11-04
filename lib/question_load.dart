@@ -1,8 +1,10 @@
 import 'package:flame/components.dart';
+import 'package:flame/game.dart';
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-class HomePageState extends Component {
+
+class Questions extends FlameGame {
   List _items = [];
 
   // Fetch content from the json file
@@ -10,5 +12,6 @@ class HomePageState extends Component {
     final String response = await rootBundle.loadString('assets/sample.json');
     final data = await json.decode(response);
     _items = data["items"];
+  
   }
 }
