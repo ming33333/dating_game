@@ -1,9 +1,12 @@
+import 'dart:html';
+
 import 'package:flame/cache.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/experimental.dart';
 import 'package:flame/game.dart';
 import 'package:flame/image_composition.dart';
+import 'package:flame/input.dart';
 import 'package:flame/rendering.dart';
 import 'package:flutter/rendering.dart';
 import 'text_load.dart';
@@ -11,7 +14,8 @@ import 'image_load.dart';
 import 'package:flame/components.dart';
 import 'dart:convert';
 import 'dart:developer' as developer;
-
+import 'dart:math';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 
@@ -35,22 +39,23 @@ class FullGame extends FlameGame with HasTappableComponents {
       ),
     );
   }
+
 }
 
 mixin HasGameReference on Component {
   FullGame get game => findGame()! as FullGame;
 }
 
-
-
 class SplashScreenPage extends Component
     with TapCallbacks, HasGameRef<FullGame> {
   late Sprite background;
+  var boyList = [Boy1(), Boy2()];
+  int num = Random().nextInt(5);
   @override
   Future<void> onLoad() async {
     addAll([
       TextBoxComponent(
-        text: '[Router demo]',
+        text: num.toString(),
         textRenderer: TextPaint(
           style: const TextStyle(
             color: Color(0x66ffffff),
@@ -299,9 +304,7 @@ class Level1Page extends Component with HasGameReference {
   }
 }
 
-
-
-class Level2Page extends Component with HasGameReference{
+class Level2Page extends Component with HasGameReference {
   @override
   Future<void> onLoad() async {
     RoundedButton;
@@ -347,7 +350,9 @@ class Level2Page extends Component with HasGameReference{
     ]);
   }
 }
+
 int boy1Score = 0;
+
 class RateRoute extends ValueRoute<int> with HasGameReference {
   RateRoute() : super(value: 0, transparent: true);
   @override
