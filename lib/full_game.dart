@@ -1,5 +1,4 @@
 import 'dart:html';
-
 import 'package:flame/cache.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
@@ -16,21 +15,18 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 import 'dart:math';
 import 'dart:io';
-import 'question_load.dart';
+import 'question_load.dart' as ql;
 
 import 'package:flutter/services.dart';
 
 class FullGame extends FlameGame with HasTappableComponents {
-  TextPaint dialogTextPaint = TextPaint(
-      style: const TextStyle(fontSize: 36, color: Color.fromARGB(0, 2, 1, 1)));
   late final RouterComponent router;
-
   @override
   Future<void> onLoad() async {
     add(
       router = RouterComponent(
         routes: {
-          'splash': Route(SplashScreenPage.new),
+          'splash': Route(TestScreen.new),
           'home': Route(StartPage.new),
           'level1': Route(Level1Page.new),
           'level2': Route(Level2Page.new),
@@ -44,25 +40,19 @@ class FullGame extends FlameGame with HasTappableComponents {
 
 mixin HasGameReference on Component {
   FullGame get game => findGame()! as FullGame;
-  var boyList = [Boy1(), Boy2(), Boy3()];
-  int numRandom = Random().nextInt(3); //change hard num to length of boy list
+  var boyList = [Boy1(), Boy2(), Boy3()]; //change to auto make list based on num of boy images
+  int numRandom = Random().nextInt(3); //change static num to length of boy list and need list of random num
+
 }
 
-class SplashScreenPage extends Component
-    with TapCallbacks, HasGameRef<FullGame> {
+class TestScreen extends Component with TapCallbacks, HasGameRef<FullGame> {
   late Sprite background;
-
-  // Fetch content from the json file
-
   @override
   Future<void> onLoad() async {
-    final String response =
-    await rootBundle.loadString('assets/questions.json');
-    final Map<String, dynamic> data = await json.decode(response);
-    var items = data["questions"]['hey'];
+    Map myData = json.decode(await ql.getJson()); 
     addAll([
       TextBoxComponent(
-        text: items.toString(),
+        text: myData.keys.elementAt(1).toString(), // fix to randomize questions
         textRenderer: TextPaint(
           style: const TextStyle(
             color: Color(0x66ffffff),
@@ -314,12 +304,12 @@ class Level1Page extends Component with HasGameReference {
 class Level2Page extends Component with HasGameReference {
   @override
   Future<void> onLoad() async {
-    RoundedButton;
+    Map myData = json.decode(await ql.getJson());
     addAll([
       Cafe(),
       boyList[numRandom],
       MyTextBox(
-        '"Level2Indeed, I am a criminal. My crime is that of curiosity."',
+       myData.keys.elementAt(0).toString(),
       )..anchor = const Anchor(0, -2),
       RoundedButton(
           text: 'Choice 1',
@@ -353,7 +343,7 @@ class Level2Page extends Component with HasGameReference {
           action: () async {
             await game.router.pushAndWait(RateRoute());
           }),
-      BackButton()
+      BackButton(),
     ]);
   }
 }
@@ -443,12 +433,6 @@ class PauseRoute extends Route {
       );
   }
 
-  @override
-  void onPop(Route previousRoute) {
-    previousRoute
-      ..resumeTime()
-      ..removeRenderEffect();
-  }
 }
 
 class PausePage extends Component with TapCallbacks, HasGameRef<FullGame> {

@@ -1,7 +1,5 @@
 {
-	"questions": {
-        "hey":["hi","yo","sup","hey"],
-        "what if your favorite fruit": ["bananas", "cherry","apples","love"]
-    }
-    
+    "hey":["hi","yo","sup","hey"],
+    "what is your favorite fruit": ["bananas", "cherry","apples","love"]
 }
+    
