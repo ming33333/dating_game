@@ -4,12 +4,12 @@ An Otome/dating game made on the Flame 🔥 Engine on Flutter. Created with my f
 
 # TODO list
 
--upload to heroku
--created "next day function" that activates "randomness" feature and move NPCs to new locations
--Currently Same NPC appears, adjust to have different
--Create dialogue system
--connect dialogue system to score system for owner to each NPC (affection system)
--make npc disappear after dialogue selection
+- upload to heroku
+- created "next day function" that activates "randomness" feature and move NPCs to new locations
+- Currently Same NPC appears, adjust to have different
+- Create dialogue system
+- connect dialogue system to score system for owner to each NPC (affection system)
+- make npc disappear after dialogue selection
 
 
 ## Getting Started
