@@ -9,15 +9,20 @@ import 'package:flame/input.dart';
 import 'package:flame/rendering.dart';
 import 'package:flutter/rendering.dart';
 import 'text_load.dart';
-import 'image_load.dart';
+import 'image_loading/image_load.dart';
+import 'image_loading/boy_load.dart';
 import 'package:flame/components.dart';
 import 'dart:convert';
 import 'dart:developer' as developer;
 import 'dart:math';
 import 'dart:io';
 import 'question_load.dart' as ql;
+import 'dart:math';
+
 
 import 'package:flutter/services.dart';
+
+
 
 class FullGame extends FlameGame with HasTappableComponents {
   late final RouterComponent router;
@@ -25,14 +30,15 @@ class FullGame extends FlameGame with HasTappableComponents {
   Future<void> onLoad() async {
     add(
       router = RouterComponent(
+        //align name of routes and map names
         routes: {
-          'splash': Route(TestScreen.new),
+          'test': Route(TestScreen.new),
           'home': Route(StartPage.new),
           'level1': Route(Level1Page.new),
           'level2': Route(Level2Page.new),
           'pause': PauseRoute(),
         },
-        initialRoute: 'splash',
+        initialRoute: 'test',
       ),
     );
   }
@@ -40,19 +46,37 @@ class FullGame extends FlameGame with HasTappableComponents {
 
 mixin HasGameReference on Component {
   FullGame get game => findGame()! as FullGame;
-  var boyList = [Boy1(), Boy2(), Boy3()]; //change to auto make list based on num of boy images
-  int numRandom = Random().nextInt(3); //change static num to length of boy list and need list of random num
 
+  List shuffle(List array) { //make shuffling shorter 
+      var random = Random(); 
+      for (var i = array.length - 1; i > 0; i--) {
+        var n = random.nextInt(i + 1);
+        var temp = array[i];
+        array[i] = array[n];
+        array[n] = temp;
+      }
+      return array;
+  } 
+  var boyList = [
+    Boy1(),
+    Boy2(),
+    Boy3()
+  ]; //OPTIONAL, code enhancement: change to auto make list based on num of boy images
+
+  int get boyNumMax => boyList.length;
+  get numList => List<int>.generate(boyNumMax, (i) => i);
+  get numListShuffle => shuffle(numList); //OPTIONAL, code enhancemen: figure out a way to short shuffle
 }
 
-class TestScreen extends Component with TapCallbacks, HasGameRef<FullGame> {
+class TestScreen extends Component
+    with TapCallbacks, HasGameRef<FullGame>, HasGameReference {
   late Sprite background;
   @override
   Future<void> onLoad() async {
-    Map myData = json.decode(await ql.getJson()); 
+    Map myData = json.decode(await ql.getJson());
     addAll([
       TextBoxComponent(
-        text: myData.keys.elementAt(1).toString(), // fix to randomize questions
+        text: numListShuffle.toString(), // fix to randomize questions, text: myData.keys.elementAt(1).toString()
         textRenderer: TextPaint(
           style: const TextStyle(
             color: Color(0x66ffffff),
@@ -87,13 +111,13 @@ class StartPage extends Component with HasGameRef<FullGame> {
         ),
         anchor: const Anchor(0.5, 3.5),
       ),
-      _button1 = RoundedButton(
+      _button1 = RoundedButton( //FIX: adjust to screensize
           text: 'Class',
           action: () => gameRef.router.pushNamed('level1'),
           color: const Color(0xffadde6c),
           borderColor: const Color(0xffedffab),
           anchor: const Anchor(-0.8, 6)),
-      _button2 = RoundedButton(
+      _button2 = RoundedButton(//FIX: adjust to screensize
           text: 'Cafeteria',
           action: () => gameRef.router.pushNamed('level2'),
           color: const Color(0xffdebe6c),
@@ -260,7 +284,7 @@ class Level1Page extends Component with HasGameReference {
     RoundedButton;
     addAll([
       Town(),
-      boyList[numRandom],
+      boyList[numListShuffle[0]],
       MyTextBox(
         '"level 1 Indeed, I am a criminal. My crime is that of curiosity."',
       )..anchor = const Anchor(0, -2),
@@ -307,9 +331,9 @@ class Level2Page extends Component with HasGameReference {
     Map myData = json.decode(await ql.getJson());
     addAll([
       Cafe(),
-      boyList[numRandom],
+      boyList[numListShuffle[1]],
       MyTextBox(
-       myData.keys.elementAt(0).toString(),
+        myData.keys.elementAt(0).toString(),
       )..anchor = const Anchor(0, -2),
       RoundedButton(
           text: 'Choice 1',
@@ -432,7 +456,6 @@ class PauseRoute extends Route {
         PaintDecorator.grayscale(opacity: 0.5)..addBlur(3.0),
       );
   }
-
 }
 
 class PausePage extends Component with TapCallbacks, HasGameRef<FullGame> {
