@@ -19,10 +19,7 @@ import 'dart:io';
 import 'question_load.dart' as ql;
 import 'dart:math';
 
-
 import 'package:flutter/services.dart';
-
-
 
 class FullGame extends FlameGame with HasTappableComponents {
   late final RouterComponent router;
@@ -47,16 +44,18 @@ class FullGame extends FlameGame with HasTappableComponents {
 mixin HasGameReference on Component {
   FullGame get game => findGame()! as FullGame;
 
-  List shuffle(List array) { //make shuffling shorter 
-      var random = Random(); 
-      for (var i = array.length - 1; i > 0; i--) {
-        var n = random.nextInt(i + 1);
-        var temp = array[i];
-        array[i] = array[n];
-        array[n] = temp;
-      }
-      return array;
-  } 
+  List shuffle(List array) {
+    //make shuffling shorter
+    var random = Random();
+    for (var i = array.length - 1; i > 0; i--) {
+      var n = random.nextInt(i + 1);
+      var temp = array[i];
+      array[i] = array[n];
+      array[n] = temp;
+    }
+    return array;
+  }
+
   var boyList = [
     Boy1(),
     Boy2(),
@@ -65,7 +64,8 @@ mixin HasGameReference on Component {
 
   int get boyNumMax => boyList.length;
   get numList => List<int>.generate(boyNumMax, (i) => i);
-  get numListShuffle => shuffle(numList); //OPTIONAL, code enhancemen: figure out a way to short shuffle
+  get numListShuffle => shuffle(
+      numList); //OPTIONAL, code enhancemen: figure out a way to short shuffle
 }
 
 class TestScreen extends Component
@@ -76,7 +76,8 @@ class TestScreen extends Component
     Map myData = json.decode(await ql.getJson());
     addAll([
       TextBoxComponent(
-        text: numListShuffle.toString(), // fix to randomize questions, text: myData.keys.elementAt(1).toString()
+        text: numListShuffle
+            .toString(), // fix to randomize questions, text: myData.keys.elementAt(1).toString()
         textRenderer: TextPaint(
           style: const TextStyle(
             color: Color(0x66ffffff),
@@ -111,13 +112,15 @@ class StartPage extends Component with HasGameRef<FullGame> {
         ),
         anchor: const Anchor(0.5, 3.5),
       ),
-      _button1 = RoundedButton( //FIX: adjust to screensize
+      _button1 = RoundedButton(
+          //FIX: adjust to screensize
           text: 'Class',
           action: () => gameRef.router.pushNamed('level1'),
           color: const Color(0xffadde6c),
           borderColor: const Color(0xffedffab),
           anchor: const Anchor(-0.8, 6)),
-      _button2 = RoundedButton(//FIX: adjust to screensize
+      _button2 = RoundedButton(
+          //FIX: adjust to screensize
           text: 'Cafeteria',
           action: () => gameRef.router.pushNamed('level2'),
           color: const Color(0xffdebe6c),
