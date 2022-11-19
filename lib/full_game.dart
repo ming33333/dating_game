@@ -40,7 +40,9 @@ class FullGame extends FlameGame with HasTappableComponents {
     );
   }
 }
+abstract class Gfg {
 
+}
 mixin HasGameReference on Component {
   FullGame get game => findGame()! as FullGame;
 
@@ -61,22 +63,33 @@ mixin HasGameReference on Component {
     Boy2(),
     Boy3()
   ]; //OPTIONAL, code enhancement: change to auto make list based on num of boy images
+  final int boyNumMax = 0;
+  get numList => List<int>.generate(boyNumMax,
+      (i) => i); //OPTIONAL, code enhancemen: figure out a way to short shuffle
+  get numListShuffle => shuffle(numList);
+  int get getName {
+    print(boyNumMax);
+    return boyNumMax;
+  }
 
-  int get boyNumMax => boyList.length;
-  get numList => List<int>.generate(boyNumMax, (i) => i);
-  get numListShuffle => shuffle(
-      numList); //OPTIONAL, code enhancemen: figure out a way to short shuffle
+  set setNum(int i) {
+    final boyNumMax = i;
+    print('boy num changed to ' + i.toString());
+  }
 }
 
 class TestScreen extends Component
     with TapCallbacks, HasGameRef<FullGame>, HasGameReference {
+
+  static const initialCapacity = 16;
   late Sprite background;
   @override
   Future<void> onLoad() async {
     Map myData = json.decode(await ql.getJson());
+
     addAll([
       TextBoxComponent(
-        text: numListShuffle
+        text: boyNumMax
             .toString(), // fix to randomize questions, text: myData.keys.elementAt(1).toString()
         textRenderer: TextPaint(
           style: const TextStyle(
@@ -97,12 +110,13 @@ class TestScreen extends Component
   void onTapUp(TapUpEvent event) => gameRef.router.pushNamed('home');
 }
 
-class StartPage extends Component with HasGameRef<FullGame> {
+class StartPage extends Component with HasGameRef<FullGame>, HasGameReference {
   StartPage() {
+    
     addAll([
       School(),
       _logo = TextComponent(
-        text: 'Dating Sim',
+        text: numListShuffle.toString(),
         textRenderer: TextPaint(
           style: const TextStyle(
             fontSize: 64,
@@ -115,7 +129,7 @@ class StartPage extends Component with HasGameRef<FullGame> {
       _button1 = RoundedButton(
           //FIX: adjust to screensize
           text: 'Class',
-          action: () => gameRef.router.pushNamed('level1'),
+          action: () => setNum = 1,
           color: const Color(0xffadde6c),
           borderColor: const Color(0xffedffab),
           anchor: const Anchor(-0.8, 6)),
@@ -130,6 +144,7 @@ class StartPage extends Component with HasGameRef<FullGame> {
   }
 
   late final TextComponent _logo;
+  late final RoundedButton _button0;
   late final RoundedButton _button1;
   late final RoundedButton _button2;
 
@@ -316,7 +331,7 @@ class Level1Page extends Component with HasGameReference {
             await game.router.pushAndWait(RateRoute());
           }),
       RoundedButton(
-          text: 'Choice 4',
+          text: numListShuffle.toString(),
           color: const Color(0xffadde6c),
           borderColor: const Color(0xffedffab),
           anchor: const Anchor(-0.8, -11),
@@ -332,9 +347,10 @@ class Level2Page extends Component with HasGameReference {
   @override
   Future<void> onLoad() async {
     Map myData = json.decode(await ql.getJson());
+
     addAll([
       Cafe(),
-      boyList[numListShuffle[1]],
+      boyList[boyNumMax],
       MyTextBox(
         myData.keys.elementAt(0).toString(),
       )..anchor = const Anchor(0, -2),
@@ -343,17 +359,13 @@ class Level2Page extends Component with HasGameReference {
           color: const Color(0xffadde6c),
           borderColor: const Color(0xffedffab),
           anchor: const Anchor(-0.8, -8),
-          action: () async {
-            Questions();
-          }),
+          action: () => getName),
       RoundedButton(
           text: 'Choice 2',
           color: const Color(0xffadde6c),
           borderColor: const Color(0xffedffab),
           anchor: const Anchor(-0.8, -9),
-          action: () async {
-            await game.router.pushAndWait(RateRoute());
-          }),
+          action: () => setNum =1),
       RoundedButton(
           text: 'Choice 3',
           color: const Color(0xffadde6c),
@@ -363,7 +375,7 @@ class Level2Page extends Component with HasGameReference {
             await game.router.pushAndWait(RateRoute());
           }),
       RoundedButton(
-          text: 'Choice 4',
+          text: numListShuffle.toString(),
           color: const Color(0xffadde6c),
           borderColor: const Color(0xffedffab),
           anchor: const Anchor(-0.8, -11),
@@ -382,7 +394,7 @@ class RateRoute extends ValueRoute<int> with HasGameReference {
   @override
   Future<void> onLoad() async {
     boy1Score++;
-    add(MyTextBox(boy1Score.toString()));
+    add(MyTextBox(numListShuffle.toString()));
   }
 }
 
